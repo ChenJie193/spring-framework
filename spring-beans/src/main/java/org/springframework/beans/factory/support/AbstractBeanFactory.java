@@ -246,11 +246,24 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
+		/**
+		 * @author: ChenJie
+		 * 提取对应的bean的name，这里为什么还要进行转换呢，原因在于bean对象实现FactoryBean接口之后会变成&beanName，同时存在别名
+		 */
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
 		// Eagerly check singleton cache for manually registered singletons.
+		/**
+		 * @author: ChenJie
+		 * 提前检查单例缓存中是否有手动注册的单例对象，跟循环依赖关联
+		 * 在bean容器缓存中（一级，二级，三级）是否存在当前对象，如果包含直接获取，如果没有创建相关对象
+		 */
 		Object sharedInstance = getSingleton(beanName);
+		/**
+		 * @author: ChenJie
+		 * 开始进入后续创建环节
+		 */
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
 				if (isSingletonCurrentlyInCreation(beanName)) {
@@ -261,18 +274,34 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
+			/**
+			 * @author: ChenJie
+			 * 返回对象的实例，这一步存在的意义在于，当你实现了FactoryBean接口的对象，需要获取具体的对象的时候就需要此方法来进行获取了
+			 */
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 
 		else {
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
+			/**
+			 * @author: ChenJie
+			 * 但对象是单例的时候会尝试解决循环依赖的问题，但是原型模式下（prototype 无法解决）如果存在循环依赖的情况，那么直接抛出异常
+			 */
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
 			// Check if bean definition exists in this factory.
+			/**
+			 * @author: ChenJie
+			 * 获取父类容器
+			 */
 			BeanFactory parentBeanFactory = getParentBeanFactory();
+			/**
+			 * @author: ChenJie
+			 * 如果beanDefinitionMap中也就这在所有已经加载的类中不包含beanName，那么久尝试从父容器中获取
+			 */
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
@@ -293,22 +322,42 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
+			/**
+			 * @author: ChenJie
+			 * 如果不是做类型检查，那么表示要创建bean，此处在集合中做一个记录
+			 */
 			if (!typeCheckOnly) {
 				markBeanAsCreated(beanName);
 			}
 
 			try {
+				/**
+				 * @author: ChenJie
+				 * 此处做了BeanDefinition对象的转换，当我们从xml文件中加载beanDefinition对象的时候，封装的对象是GenericBeanDefinition，
+				 * 此处要做类型转换，如果是子类bean的话，会合并父类的相关属性
+				 */
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
 				// Guarantee initialization of beans that the current bean depends on.
+				/**
+				 * @author: ChenJie
+				 * 如果存在依赖bean的话，那么则优先实例化依赖的bean
+				 */
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
+					/**
+					 * @author: ChenJie
+					 * 如果存在依赖，则需要递归实例化依赖的bean
+					 */
 					for (String dep : dependsOn) {
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
-						}
+						}/**
+						 * @author: ChenJie
+						 * 注册各个bean的依赖关系，方便进行销毁
+						 */
 						registerDependentBean(dep, beanName);
 						try {
 							getBean(dep);
@@ -1717,6 +1766,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					// Let the bean definition get re-merged now that we're actually creating
 					// the bean... just in case some of its metadata changed in the meantime.
 					clearMergedBeanDefinition(beanName);
+					/**
+					 * @author: ChenJie
+					 * 告诉容器哪些对象正在被创建中
+					 */
 					this.alreadyCreated.add(beanName);
 				}
 			}
