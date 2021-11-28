@@ -199,6 +199,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public Object getBean(String name) throws BeansException {
+		/**
+		 * @author: ChenJie
+		 * 开始获取bean do 方法子spring中是实际做工作的方法，所以do方法是极其需要重视的
+		 */
 		return doGetBean(name, null, null, false);
 	}
 
