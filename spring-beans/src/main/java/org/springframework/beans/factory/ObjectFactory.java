@@ -45,6 +45,10 @@ public interface ObjectFactory<T> {
 	 * @return the resulting instance
 	 * @throws BeansException in case of creation errors
 	 */
+	/**
+	 * @author: ChenJie
+	 * 执行传递的匿名参数
+	 */
 	T getObject() throws BeansException;
 
 }
