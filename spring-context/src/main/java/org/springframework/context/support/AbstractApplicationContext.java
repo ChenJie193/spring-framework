@@ -584,13 +584,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Instantiate all remaining (non-lazy-init) singletons. 实例化所有的剩下的非懒加载的，单例对象
 				/**
-				 * 完成bean的实例化
+				 * TODO 重要：完成bean的实例化
 				 */
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
 				/**
-				 *
+				 * 完成整体刷新
 				 */
 				finishRefresh();
 			}
