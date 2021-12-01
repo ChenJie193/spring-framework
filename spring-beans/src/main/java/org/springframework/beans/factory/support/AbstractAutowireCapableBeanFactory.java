@@ -615,6 +615,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			/**
+			 *<P>@author: 陈杰
+			 *<P>描述:填充bean的属性
+			 * 初始化：
+			 * 1.填充属性
+			 * 2.执行init method
+			 */
 			populateBean(beanName, mbd, instanceWrapper);
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
@@ -657,13 +664,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Register bean as disposable.
 		try {
+			/**
+			 *<P>@author: 陈杰
+			 *<P>描述:这里想当与埋了一个钩子函数 当需要销毁的时候 调用函数进行销毁
+			 */
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		}
 		catch (BeanDefinitionValidationException ex) {
 			throw new BeanCreationException(
 					mbd.getResourceDescription(), beanName, "Invalid destruction signature", ex);
 		}
-
+		/**
+		 *<P>@author: 陈杰
+		 *<P>描述:
+		 * @see DefaultSingletonBeanRegistry#getSingleton(java.lang.String, org.springframework.beans.factory.ObjectFactory)
+		 * org/springframework/beans/factory/support/DefaultSingletonBeanRegistry.java:267
+		 */
 		return exposedObject;
 	}
 
@@ -1828,15 +1844,27 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			/**
+			 *<P>@author: 陈杰
+			 *<P>描述:如果 bean 实现了 aware 的接口则执行属性填充工作
+			 */
 			invokeAwareMethods(beanName, bean);
 		}
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
+			/**
+			 *<P>@author: 陈杰
+			 *<P>描述:执行 BeanPostProcessorsBefore 方法
+			 */
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
+			/**
+			 *<P>@author: 陈杰
+			 *<P>描述:执行 init 方法
+			 */
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1845,6 +1873,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			/**
+			 *<P>@author: 陈杰
+			 *<P>描述:执行 BeanPostProcessorsAfter 方法
+			 */
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

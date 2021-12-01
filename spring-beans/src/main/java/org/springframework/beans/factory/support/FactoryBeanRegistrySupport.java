@@ -168,6 +168,10 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 				}
 			}
 			else {
+				/**
+				 *<P>@author: 陈杰
+				 *<P>描述:直接调用 getObject 方法，返回具体对象
+				 */
 				object = factory.getObject();
 			}
 		}

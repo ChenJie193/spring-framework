@@ -197,6 +197,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	// Implementation of BeanFactory interface
 	//---------------------------------------------------------------------
 
+	/**
+	 *<P>@author: 陈杰
+	 *<P>描述:
+	 * org/springframework/beans/factory/support/DefaultListableBeanFactory.java:894
+	 */
 	@Override
 	public Object getBean(String name) throws BeansException {
 		/**
@@ -391,6 +396,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw ex;
 						}
 					});
+					/**
+					 *<P>@author: 陈杰
+					 *<P>描述:从 FactoryBean 中获取对象
+					 */
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
 

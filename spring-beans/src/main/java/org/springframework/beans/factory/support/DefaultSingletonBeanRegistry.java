@@ -262,7 +262,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					/**
 					 * @author: ChenJie
 					 * 开始进行bean对象的创建
-					 * org.springframework.beans.factory.support.AbstractBeanFactory#createBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])
+					 * @see AbstractAutowireCapableBeanFactory#createBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])
 					 */
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
@@ -287,6 +287,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					/**
+					 *<P>@author: 陈杰
+					 *<P>描述:
+					 */
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
