@@ -153,6 +153,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	static {
+		/**
+		 *<P>@author: 陈杰
+		 *<P>描述:优先加载上下文关闭事件来防止奇怪的类加载问题在应用程序关闭的时候
+		 */
 		// Eagerly load the ContextClosedEvent class to avoid weird classloader issues
 		// on application shutdown in WebLogic 8.1. (Reported by Dustin Woods.)
 		ContextClosedEvent.class.getName();
@@ -162,6 +166,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/** Logger used by this class. Available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	/**
+	 *<P>@author: 陈杰
+	 *<P>描述:创建上下文的唯一标识
+	 */
 	/** Unique id for this context, if any. */
 	private String id = ObjectUtils.identityToString(this);
 
@@ -226,6 +234,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Create a new AbstractApplicationContext with no parent.
 	 */
 	public AbstractApplicationContext() {
+		/**
+		 *<P>@author: 陈杰
+		 *<P>描述:创建资源模式处理器-用来解析一些配置资源
+		 */
 		this.resourcePatternResolver = getResourcePatternResolver();
 	}
 
@@ -455,6 +467,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */
 	protected ResourcePatternResolver getResourcePatternResolver() {
+		// 创建一个资源模式解析器（其实就是用来解析xml配置文件）
 		return new PathMatchingResourcePatternResolver(this);
 	}
 

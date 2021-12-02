@@ -35,7 +35,7 @@
 	<!--            </aop:aspect>-->
 	<!--        </aop:config>-->
 
-	<bean id="person" class="com.mashibing.Person" >
+	<bean id="person" class="org.springframework.debug" >
 		<property name="id" value="1"></property>
 		<property name="name" value="zhangsan"></property>
 	</bean>
