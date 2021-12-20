@@ -10,10 +10,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class Test {
 
 	public static void main(String[] args) {
-		ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("test.xml");
-        Person person = ac.getBean("person", Person.class);
-        ac.close();
-        Person person2 = ac.getBean("person", Person.class);
+
+		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("applicationContext.xml");
+
+//		ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("test.xml");
+//        Person person = ac.getBean("person", Person.class);
+//        ac.close();
+//        Person person2 = ac.getBean("person", Person.class);
 	}
 }
 
