@@ -176,8 +176,14 @@ final class PostProcessorRegistrationDelegate {
 		// Finally, invoke all other BeanFactoryPostProcessors.
 		List<BeanFactoryPostProcessor> nonOrderedPostProcessors = new ArrayList<>(nonOrderedPostProcessorNames.size());
 		for (String postProcessorName : nonOrderedPostProcessorNames) {
+			// 将实现了
 			nonOrderedPostProcessors.add(beanFactory.getBean(postProcessorName, BeanFactoryPostProcessor.class));
 		}
+		/**
+		 *<P>@author: 陈杰
+		 *<P>描述:todo PostProcessors
+		 * 遍历实现了Ordered接口的BeanFactoryPostProcessor，执行PostProcessorBeanFactory方法
+		 */
 		invokeBeanFactoryPostProcessors(nonOrderedPostProcessors, beanFactory);
 
 		// Clear cached merged bean definitions since the post-processors might have
