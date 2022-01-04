@@ -1846,7 +1846,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		else {
 			/**
 			 *<P>@author: 陈杰
-			 *<P>描述:如果 bean 实现了 aware 的接口则执行属性填充工作
+			 *<P>描述:如果 bean 实现了 Aware 的接口则执行属性填充工作
 			 */
 			invokeAwareMethods(beanName, bean);
 		}
