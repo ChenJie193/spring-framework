@@ -23,8 +23,10 @@ public class MyClassPathXMLApplicationContext extends ClassPathXmlApplicationCon
 		 * @see org.springframework.context.support.AbstractRefreshableApplicationContext#customizeBeanFactory(org.springframework.beans.factory.support.DefaultListableBeanFactory)
 		 *
 		 */
-		beanFactory.setAllowBeanDefinitionOverriding(false);
-		beanFactory.setAllowCircularReferences(false);
+//		beanFactory.setAllowBeanDefinitionOverriding(false);
+//		beanFactory.setAllowCircularReferences(false);
+		super.addBeanFactoryPostProcessor(new MyBeanFactoryPostProcessor());
+		super.customizeBeanFactory(beanFactory);
 		super.customizeBeanFactory(beanFactory);
 	}
 }

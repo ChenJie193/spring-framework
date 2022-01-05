@@ -788,6 +788,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		/**
 		 * 这边 getBeanFactoryPostProcessors() 会拿到当前应用上下文中已经注册的 BeanFactoryPostProcessor，
 		 * 在默认情况下，this.beanFactoryPostProcessors 是返回空的。
+		 *  如果一个类实现了BeanDefinitionRegistryPostProcessor，那么他的postProcessBeanFactory()方法可以跟其他的BeanFactoryPostProcessor一起执行
+		 *
+		 *
 		 */
 		//获取当前应用程序上下文的 BeanFactoryPostProcessors 变量的值，并且实例化调用执行所有已经注册的 BeanFactoryPostProcessor
 		//默认情况下，通过getBeanFactoryPostProcessors() 来获取已经注册的BFPP，但是默认是空的，那么问题来了，如果你想扩展，怎么进行扩展工作
