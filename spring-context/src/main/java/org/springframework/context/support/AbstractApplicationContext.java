@@ -558,7 +558,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				//默认空实现，默认模板方法,供扩展使用
 
 				/**
-				 * 如何实现扩展
+				 * 如何实现扩展，只需子类覆盖方法做额外的处理 ，可以对 beanFactory 里面的东西进行任意的更改
 				 *@see BeanFactoryPostProcessor
 				 */
 				postProcessBeanFactory(beanFactory);

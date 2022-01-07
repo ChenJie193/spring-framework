@@ -10,6 +10,6 @@ public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
-        System.out.println("71734534534534534");
+        System.out.println("---------------------");
     }
 }

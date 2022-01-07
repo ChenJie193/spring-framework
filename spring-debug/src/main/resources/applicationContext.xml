@@ -32,7 +32,7 @@
 <!--			</set>-->
 <!--		</property>-->
 <!--	</bean>-->
-	<!--    <bean class="com.mashibing.MyBeanFactoryPostProcessor"></bean>-->
+<!--	    <bean class="org.springframework.debug.MyBeanFactoryPostProcessor"></bean>-->
 	<!--    <bean id="a" class="com.mashibing.cycle.A" scope="prototype">-->
 	<!--        <property name="b" ref="b"></property>-->
 	<!--    </bean>-->
