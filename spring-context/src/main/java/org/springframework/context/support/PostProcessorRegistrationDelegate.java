@@ -170,8 +170,15 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanFactoryPostProcessors(beanFactoryPostProcessors, beanFactory);
 		}
 
+		/**
+		 * 到这里为止入参 BeanFactoryPostProcessor 和容器中的所有 BeanDefinitionRegistryPostProcessor 已经全部处理完毕，下面开始处理容器中
+		 * 所有的 BeanFactoryPostProcessor
+		 * 在这里为什么有两套相似的逻辑？
+		 * 为了处理BFPP的逻辑
+		 */
 		// Do not initialize FactoryBeans here: We need to leave all regular beans
 		// uninitialized to let the bean factory post-processors apply to them!
+		// 找到所有实现BeanFactoryPostProcessor接口类
 		String[] postProcessorNames =
 				beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);
 
