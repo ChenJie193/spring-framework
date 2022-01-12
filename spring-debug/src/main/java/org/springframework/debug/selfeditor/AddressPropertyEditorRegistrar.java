@@ -1,9 +1,7 @@
-package org.springframework.selfeditor;
+package org.springframework.debug.selfeditor;
 
 import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.beans.PropertyEditorRegistry;
-
-import java.beans.PropertyEditor;
 
 public class AddressPropertyEditorRegistrar implements PropertyEditorRegistrar {
 

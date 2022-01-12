@@ -1,4 +1,4 @@
-package org.springframework.selfeditor;
+package org.springframework.debug.selfeditor;
 
 import java.beans.PropertyEditorSupport;
 

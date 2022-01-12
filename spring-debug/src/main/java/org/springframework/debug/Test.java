@@ -1,7 +1,6 @@
 package org.springframework.debug;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.selfeditor.Customer;
+import org.springframework.debug.selfeditor.Customer;
 
 /**
  *<P>@author: 陈杰

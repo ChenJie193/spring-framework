@@ -1,12 +1,10 @@
-package org.springframework.selfaware;
+package org.springframework.debug.selfaware;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.*;
 
 import java.security.AccessControlContext;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 public class MyAwareProcessor implements BeanPostProcessor {
 

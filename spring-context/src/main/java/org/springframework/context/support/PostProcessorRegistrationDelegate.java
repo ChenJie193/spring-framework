@@ -52,6 +52,13 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 
+	/**
+	 * 这里分三块执行
+	 * 1、用户手动加入的BeanFactoryPostProcessor  以方法参数的形式注入进来的
+	 * 2、实现了BeanDefinitionRegistryPostProcessor接口的  整个工厂中通过类型匹配找到的
+	 * 3、实现了BeanFactoryPostProcessor接口的类  通过类型匹配找到的
+	 *
+	 */
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
