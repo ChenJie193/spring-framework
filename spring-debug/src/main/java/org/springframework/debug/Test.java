@@ -12,15 +12,15 @@ public class Test {
 
 	public static void main(String[] args) {
 
-//		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("applicationContext.xml");
+		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("applicationContext.xml");
 
 //		ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("test.xml");
 //        Person person = ac.getBean("person", Person.class);
 //        ac.close();
 //        Person person2 = ac.getBean("person", Person.class);
-		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("selfEditor.xml");
-		Customer bean = ac.getBean(Customer.class);
-		System.out.println(bean);
+//		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("selfEditor.xml");
+//		Customer bean = ac.getBean(Customer.class);
+//		System.out.println(bean);
 	}
 }
 

@@ -2,6 +2,7 @@ package org.springframework.debug.selfbdrpp;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -13,7 +14,9 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 		System.out.println("执行PostProcessorBeanDefinitionRegistry---MyBeanDefinitionRegistryPostProcessor");
-		registry.registerBeanDefinition("sgb",new RootBeanDefinition(Teacher.class));
+		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(MySelfBeanDefinitionRegistryPostProcessor.class);
+		builder.addPropertyValue("name", "zhangsan");
+		registry.registerBeanDefinition("jyb", builder.getBeanDefinition());
 	}
 
 	@Override
