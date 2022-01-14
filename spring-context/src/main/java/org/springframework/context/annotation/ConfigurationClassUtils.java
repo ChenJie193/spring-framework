@@ -74,6 +74,8 @@ abstract class ConfigurationClassUtils {
 
 
 	/**
+	 *
+	 * 判断 BeanDefinition 的类型
 	 * Check whether the given bean definition is a candidate for a configuration class
 	 * (or a nested component class declared within a configuration/component class,
 	 * to be auto-registered as well), and mark it accordingly.
@@ -103,18 +105,24 @@ abstract class ConfigurationClassUtils {
 		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
 			// Check already loaded Class if present...
 			// since we possibly can't even load the class file for this Class.
+			// 获取当前bean对象的Class对象
 			Class<?> beanClass = ((AbstractBeanDefinition) beanDef).getBeanClass();
+			// 如果class实例是下面四种类或接口的子类、父接口等任何一种情况，直接返回
 			if (BeanFactoryPostProcessor.class.isAssignableFrom(beanClass) ||
 					BeanPostProcessor.class.isAssignableFrom(beanClass) ||
 					AopInfrastructureBean.class.isAssignableFrom(beanClass) ||
 					EventListenerFactory.class.isAssignableFrom(beanClass)) {
 				return false;
 			}
+			// 为给定类创建新的AnnotationMetadata实例
 			metadata = AnnotationMetadata.introspect(beanClass);
 		}
+		// 如果上述两种情况都不符合 既不是 AnnotatedBeanDefinition 也不是 AbstractBeanDefinition
 		else {
 			try {
+				// 如果上述两种情况都不符合
 				MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(className);
+				// 读取底层类的完整注释元数据，包括带注解方法的元数据
 				metadata = metadataReader.getAnnotationMetadata();
 			}
 			catch (IOException ex) {
