@@ -50,8 +50,10 @@ import org.springframework.stereotype.Component;
  */
 abstract class ConfigurationClassUtils {
 
+	// Configuration class如果是@Configuration注解标注的类，那么将属性标注为full
 	public static final String CONFIGURATION_CLASS_FULL = "full";
 
+	// 非@Configuration注解标注的类，那么将属性标注如lite
 	public static final String CONFIGURATION_CLASS_LITE = "lite";
 
 	public static final String CONFIGURATION_CLASS_ATTRIBUTE =
@@ -169,11 +171,13 @@ abstract class ConfigurationClassUtils {
 	 */
 	public static boolean isConfigurationCandidate(AnnotationMetadata metadata) {
 		// Do not consider an interface or an annotation...
+		// 不考虑接口或注解
 		if (metadata.isInterface()) {
 			return false;
 		}
 
 		// Any of the typical annotations found?
+		// 检查是否被注解@Component、@ComponentScan、@Import、@ImportResource标注
 		for (String indicator : candidateIndicators) {
 			if (metadata.isAnnotated(indicator)) {
 				return true;
@@ -181,6 +185,7 @@ abstract class ConfigurationClassUtils {
 		}
 
 		// Finally, let's look for @Bean methods...
+		// 最后检查是否有@Bean标注的方法
 		try {
 			return metadata.hasAnnotatedMethods(Bean.class.getName());
 		}
