@@ -281,6 +281,7 @@ class ConfigurationClassParser {
 			throws IOException {
 
 		// @Configuration继承了@Component
+		//todo significance
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			// 递归处理内部类，因为内部类也是一个配置类，配置类上有@configuration注解，该注解继承@Component，if判断为true，调用processMemberClasses方法，递归解析配置类中的内部类
