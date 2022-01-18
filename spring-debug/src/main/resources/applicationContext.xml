@@ -8,6 +8,7 @@
 
 	<!--    <msb:user id="msb" userName="lian" email="lian@msb.com" password="123456"></msb:user>-->
 	<context:component-scan base-package="org.springframework.debug" ></context:component-scan>
+	<context:component-scan base-package="org.springframework.debug.shouldSkip" ></context:component-scan>
 <!--	<bean id="user" class="com.mashibing.supplier.User" ></bean>-->
 	<context:property-placeholder location="classpath:db.properties" ></context:property-placeholder>
 	<bean class="org.springframework.debug.selfbdrpp.MyBeanDefinitionRegistryPostProcessor"></bean>

@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 @Configuration
-@ComponentScan("org.springframework.debug")
+@ComponentScan("org.springframework.debug.selftag")
 public class MyComponentScan {
 
-    @ComponentScan("org.springframework.debug")
+    @ComponentScan("org.springframework.debug.selftag")
     @Configuration
     @Order(90)
     class InnerClass{
