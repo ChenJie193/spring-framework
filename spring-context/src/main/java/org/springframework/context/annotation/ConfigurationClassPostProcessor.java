@@ -276,7 +276,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	/**
 	 * 构建和验证一个类是否被 @Configuration 修饰，并做相关的解析工作
 	 *
-	 * 如果你对此方法了解清楚了，那么springboot的自动装配原理就清楚了
+	 * 如果你对此方法了解清楚了，那么springBoot的自动装配原理就清楚了
 	 *
 	 * Build and validate a configuration model based on the registry of
 	 * {@link Configuration} classes.

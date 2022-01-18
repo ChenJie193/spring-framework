@@ -123,6 +123,7 @@ final class PostProcessorRegistrationDelegate {
 			// 添加到registryProcessors中，用于最后执行postProcessBeanFactory方法
 			registryProcessors.addAll(currentRegistryProcessors);
 			// 遍历currentRegistryProcessors执行 PostProcessBeanDefinitionRegistry方法
+			// todo significance
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			// 执行完毕之后，清空currentRegistryProcessors
 			currentRegistryProcessors.clear();
