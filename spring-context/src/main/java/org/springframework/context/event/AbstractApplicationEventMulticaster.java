@@ -63,16 +63,21 @@ import org.springframework.util.ObjectUtils;
 public abstract class AbstractApplicationEventMulticaster
 		implements ApplicationEventMulticaster, BeanClassLoaderAware, BeanFactoryAware {
 
+	// 创建监听器助手类，用于存放应用程序的监听器集合，参数是否是预过滤监听器为false
 	private final ListenerRetriever defaultRetriever = new ListenerRetriever(false);
 
+	// ListenerCacheKey是基于事件类型和源类型的类作为key用来存储监听器助手defaultRetriever
 	final Map<ListenerCacheKey, ListenerRetriever> retrieverCache = new ConcurrentHashMap<>(64);
 
+	// 类加载器
 	@Nullable
 	private ClassLoader beanClassLoader;
 
+	// IOC容器工厂类
 	@Nullable
 	private ConfigurableBeanFactory beanFactory;
 
+	// 互斥的监听器助手类
 	private Object retrievalMutex = this.defaultRetriever;
 
 
@@ -83,68 +88,94 @@ public abstract class AbstractApplicationEventMulticaster
 
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) {
+		//如果 beanFactory 不是 ConfigurableBeanFactory 实例
 		if (!(beanFactory instanceof ConfigurableBeanFactory)) {
+			// 抛出非法状态异常：不在 ConfigurableBeanFactory：beanFactory
 			throw new IllegalStateException("Not running in a ConfigurableBeanFactory: " + beanFactory);
 		}
 		this.beanFactory = (ConfigurableBeanFactory) beanFactory;
+		//如果beanClassLoader为null
 		if (this.beanClassLoader == null) {
+			//获取beanFactory的类加载器以加载Bean类(即使无法使用系统ClassLoader,也只能为null)
 			this.beanClassLoader = this.beanFactory.getBeanClassLoader();
 		}
+		//获取beanFactory使用的单例互斥锁(用于外部协作者)
 		this.retrievalMutex = this.beanFactory.getSingletonMutex();
 	}
 
 	private ConfigurableBeanFactory getBeanFactory() {
+		//如果beanFactory为null
 		if (this.beanFactory == null) {
 			throw new IllegalStateException("ApplicationEventMulticaster cannot retrieve listener beans " +
 					"because it is not associated with a BeanFactory");
 		}
+		//返回当前BeanFactory
 		return this.beanFactory;
 	}
 
 
 	@Override
 	public void addApplicationListener(ApplicationListener<?> listener) {
+		//使用retrievalMutex加锁，保证线程安全
 		synchronized (this.retrievalMutex) {
 			// Explicitly remove target for a proxy, if registered already,
 			// in order to avoid double invocations of the same listener.
+			// 显示删除代理的目标(如果已经注册)，以避免对同一个监听器的两次调用获取listener背后的singleton目标对象
 			Object singletonTarget = AopProxyUtils.getSingletonTarget(listener);
+			//如果singletonTarget是ApplicationListener实例
 			if (singletonTarget instanceof ApplicationListener) {
+				//将singletonTarget从defaultRetriever.applicationListeners中移除
 				this.defaultRetriever.applicationListeners.remove(singletonTarget);
 			}
+			//将listener添加到defaultRetriever.applicationListeners中
 			this.defaultRetriever.applicationListeners.add(listener);
+			//清空缓存，因为listener可能支持缓存的某些事件类型和源类型，所以要刷新缓存
 			this.retrieverCache.clear();
 		}
 	}
 
 	@Override
 	public void addApplicationListenerBean(String listenerBeanName) {
+		//使用retrievalMutex加锁，保证线程安全
 		synchronized (this.retrievalMutex) {
+			// 将listenerBeanName添加到defaultRetriever的applicationListenerBeans
 			this.defaultRetriever.applicationListenerBeans.add(listenerBeanName);
+			// 清空缓存，因为listener可能支持缓存的某些事件类型和源类型，所以要刷新缓存
 			this.retrieverCache.clear();
 		}
 	}
 
 	@Override
 	public void removeApplicationListener(ApplicationListener<?> listener) {
+		//使用retrievalMutex加锁，保证线程安全
 		synchronized (this.retrievalMutex) {
+			//将listener从retriever的ApplicationListener对象集合中移除
 			this.defaultRetriever.applicationListeners.remove(listener);
+			//清空缓存，因为listener可能支持缓存的某些事件类型和源类型，所以要刷新缓存
 			this.retrieverCache.clear();
 		}
 	}
 
 	@Override
 	public void removeApplicationListenerBean(String listenerBeanName) {
+		//使用retrievalMutex加锁，保证线程安全
 		synchronized (this.retrievalMutex) {
+			//将listener从retriever的ApplicationListener对象集合中移除
 			this.defaultRetriever.applicationListenerBeans.remove(listenerBeanName);
+			//清空缓存，因为listener可能支持缓存的某些事件类型和源类型，所以要刷新缓存
 			this.retrieverCache.clear();
 		}
 	}
 
 	@Override
 	public void removeAllListeners() {
+		//使用retrievalMutex加锁，保证线程安全
 		synchronized (this.retrievalMutex) {
+			//清空defaultRetriever的ApplicationListener对象集合
 			this.defaultRetriever.applicationListeners.clear();
+			//清空defaultRetriever的BeanFactory中的applicationListener类型Bean名集合
 			this.defaultRetriever.applicationListenerBeans.clear();
+			//清空缓存，因为listener可能支持缓存的某些事件类型和源类型，所以要刷新缓存
 			this.retrieverCache.clear();
 		}
 	}
