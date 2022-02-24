@@ -448,26 +448,42 @@ public abstract class AbstractApplicationEventMulticaster
 	 */
 	private class ListenerRetriever {
 
+		// ApplicationListener 对象集合
 		public final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
+		// BeanFactory中的applicationListener类型Bean名集合
 		public final Set<String> applicationListenerBeans = new LinkedHashSet<>();
 
+		// 是否预过滤监听器
 		private final boolean preFiltered;
 
+		/**
+		 * 新建一个ListenerRetriever实例
+		 * @param preFiltered
+		 */
 		public ListenerRetriever(boolean preFiltered) {
 			this.preFiltered = preFiltered;
 		}
 
+		// 获取ListenerRetriever存放的所有ApplicationListener对象
 		public Collection<ApplicationListener<?>> getApplicationListeners() {
+			// 定义存放所有监听器的集合
 			List<ApplicationListener<?>> allListeners = new ArrayList<>(
 					this.applicationListeners.size() + this.applicationListenerBeans.size());
+			// 将applicationListeners添加到allListeners中
 			allListeners.addAll(this.applicationListeners);
+			// 如果applicationListenerBeans不是空集合
 			if (!this.applicationListenerBeans.isEmpty()) {
+				// 获取当前上下文BeanFactory
 				BeanFactory beanFactory = getBeanFactory();
+				// 遍历applicationListenerBeans
 				for (String listenerBeanName : this.applicationListenerBeans) {
 					try {
+						// 从beanFactory中获取名为listenerBeanName的ApplicationListener类型的Bean对象
 						ApplicationListener<?> listener = beanFactory.getBean(listenerBeanName, ApplicationListener.class);
+						// 如果允许预过滤||allListeneres没有包含该listener
 						if (this.preFiltered || !allListeners.contains(listener)) {
+							// 将listener添加allListeners中
 							allListeners.add(listener);
 						}
 					}
@@ -477,7 +493,11 @@ public abstract class AbstractApplicationEventMulticaster
 					}
 				}
 			}
+			// 如果不允许预过滤||applicationListenerBeans不是空集合
 			if (!this.preFiltered || !this.applicationListenerBeans.isEmpty()) {
+				// AnnotationAwareOrderComparator：OrderComparator的扩展,它支持Spring 的org.springframework.core.Ordered接口以及@Oreder和@Priority注解,
+				// 其中Ordered实例提供的Order值将覆盖静态定义的注解值(如果有)
+				// 使用AnnotationAwareOrderComparator对allListeners进行排序
 				AnnotationAwareOrderComparator.sort(allListeners);
 			}
 			return allListeners;
