@@ -1339,12 +1339,19 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
 	 * @throws BeanDefinitionStoreException in case of an invalid bean definition
 	 */
+	// 作用：整合一些父类里面也包含 BeanDefinition 的对象
 	protected RootBeanDefinition getMergedLocalBeanDefinition(String beanName) throws BeansException {
 		// Quick check on the concurrent map first, with minimal locking.
+		// 首先以最小的锁定快速检测并发映射。
+		// 从bean名称映射到合并的RootBeanDefinition的集合中获取beanName对应的RootBeanDefinition
 		RootBeanDefinition mbd = this.mergedBeanDefinitions.get(beanName);
+		// 如果mbd不为null 且 不需要重新合并定义
 		if (mbd != null && !mbd.stale) {
+			// 返回对应的RootBeanDefinition
 			return mbd;
 		}
+		// 获取beanName对应的合并Bean定义，如果beanName对应的BeanDefinition是子BeanDefinition,
+		// 则通过与父级合并返回RootBeanDefinition
 		return getMergedBeanDefinition(beanName, getBeanDefinition(beanName));
 	}
 
