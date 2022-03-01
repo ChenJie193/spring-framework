@@ -298,15 +298,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			// Check if bean definition exists in this factory.
-			/**
-			 * @author: ChenJie
-			 * 获取父类容器
-			 */
+			// 获取父类容器
 			BeanFactory parentBeanFactory = getParentBeanFactory();
-			/**
-			 * @author: ChenJie
-			 * 如果beanDefinitionMap中也就这在所有已经加载的类中不包含beanName，那么久尝试从父容器中获取
-			 */
+			// 如果beanDefinitionMap中也就这在所有已经加载的类中不包含beanName，那么久尝试从父容器中获取
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
@@ -327,10 +321,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
-			/**
-			 * @author: ChenJie
-			 * 如果不是做类型检查，那么表示要创建bean，此处在集合中做一个记录
-			 */
+			// 如果不是做类型检查，那么表示要创建bean，此处在集合中做一个记录
 			if (!typeCheckOnly) {
 				markBeanAsCreated(beanName);
 			}
@@ -380,10 +371,6 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				 * 创建bean的实例对象
 				 */
 				if (mbd.isSingleton()) {
-					/**
-					 * @author: ChenJie
-					 * 
-					 */
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							return createBean(beanName, mbd, args);
@@ -1582,14 +1569,18 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			throws CannotLoadBeanClassException {
 
 		try {
+			// 判断mbd的定义信息中是否包含beanClass，并且是Class类型的，如果是直接返回，否则的话进行详细的解析
 			if (mbd.hasBeanClass()) {
+				// 如果mbd指定了bean类
 				return mbd.getBeanClass();
 			}
+			// 判断是否有安全管理器
 			if (System.getSecurityManager() != null) {
-				return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>) () ->
-					doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
+				return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>)
+						() -> doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
 			}
 			else {
+				// 进行详细的处理解析过程
 				return doResolveBeanClass(mbd, typesToMatch);
 			}
 		}
@@ -1609,19 +1600,33 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>... typesToMatch)
 			throws ClassNotFoundException {
 
+		// 获取该工厂的加载bean用的类加载器
 		ClassLoader beanClassLoader = getBeanClassLoader();
+		// 初始化动态类加载器为该工厂的加载bean用的类加载器,如果该工厂有
+		// 临时类加载器器时，该动态类加载器就是该工厂的临时类加载器
 		ClassLoader dynamicLoader = beanClassLoader;
+		// 表示mdb的配置的bean类名需要重新被dynameicLoader加载的标记，默认不需要
 		boolean freshResolve = false;
 
+		//如果有传入要匹配的类型
 		if (!ObjectUtils.isEmpty(typesToMatch)) {
 			// When just doing type checks (i.e. not creating an actual instance yet),
 			// use the specified temporary class loader (e.g. in a weaving scenario).
+			// 仅进行类型检查时（即尚未创建实际实例），请使用指定的临时类加载器
+			// 获取该工厂的临时类加载器，该临时类加载器专门用于类型匹配
 			ClassLoader tempClassLoader = getTempClassLoader();
+			// 如果成功获取到临时类加载器
 			if (tempClassLoader != null) {
+				// 以该工厂的临时类加载器作为动态类加载器
 				dynamicLoader = tempClassLoader;
+				// 标记mdb的配置的bean类名需要重新被dynameicLoader加载
 				freshResolve = true;
+				// DecoratingClassLoader:装饰ClassLoader的基类,提供对排除的包和类的通用处理
+				// 如果临时类加载器是DecoratingClassLoader的基类
 				if (tempClassLoader instanceof DecoratingClassLoader) {
+					// 将临时类加载器强转为DecoratingClassLoader实例
 					DecoratingClassLoader dcl = (DecoratingClassLoader) tempClassLoader;
+					// 对要匹配的类型进行在装饰类加载器中的排除，以交由父ClassLoader以常规方式处理
 					for (Class<?> typeToMatch : typesToMatch) {
 						dcl.excludeClass(typeToMatch.getName());
 					}
@@ -1629,40 +1634,61 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
+		// 从mbd中获取配置的bean类名
 		String className = mbd.getBeanClassName();
+		// 如果能成功获得配置的bean类名
 		if (className != null) {
+			//评估benaDefinition中包含的className,如果className是可解析表达式，会对其进行解析，否则直接返回className:
 			Object evaluated = evaluateBeanDefinitionString(className, mbd);
+			// 判断className是否等于计算出的表达式的结果，如果不等于，那么判断evaluated的类型
 			if (!className.equals(evaluated)) {
 				// A dynamically resolved expression, supported as of 4.2...
+				// 如果evaluated属于Class实例
 				if (evaluated instanceof Class) {
+					// 强转evaluatedw为Class对象并返回出去
 					return (Class<?>) evaluated;
 				}
+				// 如果evaluated属于String实例
 				else if (evaluated instanceof String) {
+					// 将evaluated作为className的值
 					className = (String) evaluated;
+					// 标记mdb的配置的bean类名需要重新被dynameicLoader加载
 					freshResolve = true;
 				}
 				else {
+					// 抛出非法状态异常：无效的类名表达式结果：evaluated
 					throw new IllegalStateException("Invalid class name expression result: " + evaluated);
 				}
 			}
+			// 如果mdb的配置的bean类名需要重新被dynameicLoader加载
 			if (freshResolve) {
 				// When resolving against a temporary class loader, exit early in order
 				// to avoid storing the resolved Class in the bean definition.
+				// 当使用临时类加载器进行解析时，请尽早退出以避免将已解析的类存储在BeanDefinition中
+				// 如果动态类加载器不为null
 				if (dynamicLoader != null) {
 					try {
+						// 使用dynamicLoader加载className对应的类型，并返回加载成功的Class对象
 						return dynamicLoader.loadClass(className);
 					}
+					// 捕捉未找到类异常，
 					catch (ClassNotFoundException ex) {
 						if (logger.isTraceEnabled()) {
 							logger.trace("Could not load class [" + className + "] from " + dynamicLoader + ": " + ex);
 						}
 					}
 				}
+				// 使用classLoader加载name对应的Class对象,该方式是Spring用于代替Class.forName()的方法，支持返回原始的类实例(如'int')
+				// 和数组类名 (如'String[]')。此外，它还能够以Java source样式解析内部类名(如:'java.lang.Thread.State'
+				// 而不是'java.lang.Thread$State')
 				return ClassUtils.forName(className, dynamicLoader);
 			}
 		}
 
 		// Resolve regularly, caching the result in the BeanDefinition...
+		// 定期解析，将结果缓存在BeanDefinition中...
+		// 使用classLoader加载当前BeanDefinitiond对象所配置的Bean类名的Class对象（每次调用都会重新加载,可通过
+		// AbstractBeanDefinition#getBeanClass 获取缓存）
 		return mbd.resolveBeanClass(beanClassLoader);
 	}
 
