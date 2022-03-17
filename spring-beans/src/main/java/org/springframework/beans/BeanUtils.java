@@ -197,10 +197,6 @@ public abstract class BeanUtils {
 						argsWithDefaultValues[i] = args[i];
 					}
 				}
-				/**
-				 * @author: ChenJie
-				 * 开始进行实例化
-				 */
 				return ctor.newInstance(argsWithDefaultValues);
 			}
 		}

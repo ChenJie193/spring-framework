@@ -25,14 +25,14 @@
 <!--		<property name="username" value="${jdbc.username}"></property>-->
 <!--	</bean>-->
 
-<!--	<bean id="studentConverter" class="com.mashibing.selfConverter.StudentConverter"></bean>-->
-<!--	<bean id ="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">-->
-<!--		<property name="converters">-->
-<!--			<set>-->
-<!--				<ref bean="studentConverter"></ref>-->
-<!--			</set>-->
-<!--		</property>-->
-<!--	</bean>-->
+	<bean id="studentConverter" class="org.springframework.debug.selfConverter.StudentConverter"></bean>
+	<bean id ="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+			<set>
+				<ref bean="studentConverter"></ref>
+			</set>
+		</property>
+	</bean>
 <!--	    <bean class="org.springframework.debug.MyBeanFactoryPostProcessor"></bean>-->
 	<!--    <bean id="a" class="com.mashibing.cycle.A" scope="prototype">-->
 	<!--        <property name="b" ref="b"></property>-->

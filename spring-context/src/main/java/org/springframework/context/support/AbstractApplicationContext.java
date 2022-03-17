@@ -974,13 +974,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		/**
 		 * 织入 Aware
 		 */
+		// 尽早初始化loadTimeWeaverAware bean,以便尽早注册它们的转换器
 		String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, false, false);
 		for (String weaverAwareName : weaverAwareNames) {
 			getBean(weaverAwareName);
 		}
 
 		// Stop using the temporary ClassLoader for type matching. 设置临时的ClassLoader
-		// 禁止使用临时类加载器进行类型匹配
+		// 设置一个临时的类加载器进行类型匹配
 		beanFactory.setTempClassLoader(null);
 
 		// Allow for caching all bean definition metadata, not expecting further changes.
