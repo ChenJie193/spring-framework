@@ -8,6 +8,8 @@
 
 	<!--    <msb:user id="msb" userName="lian" email="lian@msb.com" password="123456"></msb:user>-->
 	<context:component-scan base-package="org.springframework.debug" ></context:component-scan>
+	<bean id="user" class="org.springframework.debug.supplier.User" ></bean>
+	<bean id="myFactoryBean" class="org.springframework.debug.MyFactoryBean" ></bean>
 	<context:component-scan base-package="org.springframework.debug.shouldSkip" ></context:component-scan>
 <!--	<bean id="user" class="com.mashibing.supplier.User" ></bean>-->
 	<context:property-placeholder location="classpath:db.properties" ></context:property-placeholder>
