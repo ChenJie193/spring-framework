@@ -291,7 +291,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			// We're assumably within a circular reference.
 			/**
 			 * @author: ChenJie
-			 * 但对象是单例的时候会尝试解决循环依赖的问题，但是原型模式下（prototype 无法解决）如果存在循环依赖的情况，那么直接抛出异常
+			 * 当对象是单例的时候会尝试解决循环依赖的问题，但是原型模式下（prototype 无法解决）如果存在循环依赖的情况，那么直接抛出异常
 			 */
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
@@ -1934,43 +1934,69 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
+		// 如果Bean不是工厂，不要让调用代码尝试取消对工厂的引用
+		// 如果name为FactoryBean的解引用.name是以'&'开头，就是FactoryBean的解引用
 		if (BeanFactoryUtils.isFactoryDereference(name)) {
+			// 如果beanInstance是NullBean实例
 			if (beanInstance instanceof NullBean) {
+				// 返回beanInstance
 				return beanInstance;
 			}
+			// 如果beanInstance不是FactoryBean实例
 			if (!(beanInstance instanceof FactoryBean)) {
+				// 抛出Bean不是一个Factory异常
 				throw new BeanIsNotAFactoryException(beanName, beanInstance.getClass());
 			}
+			// 如果mbd不为null
 			if (mbd != null) {
+				// 设置mbd是否是FactoryBean标记为true
 				mbd.isFactoryBean = true;
 			}
+			// 返回beanInstance
 			return beanInstance;
 		}
 
 		// Now we have the bean instance, which may be a normal bean or a FactoryBean.
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.
+		// 现在我们有了Bean实例，他可能是一个普通的Bean或FactoryBean。
+		// 如果它是FactoryBean,我们使用它来创建一个Bean实例，除非调用者确实需要对工厂的引用。
+		// 如果beanInstance不是FactoryBean实例
 		if (!(beanInstance instanceof FactoryBean)) {
 			return beanInstance;
 		}
 
+		// 定义为bean公开的对象，初始化为null
 		Object object = null;
+		// 如果mbd不为null
 		if (mbd != null) {
+			// 更新mbd的是否是FactoryBean标记为true
 			mbd.isFactoryBean = true;
 		}
 		else {
+			// 从FactoryBean获得的对象缓存集中获取beanName对应的Bean对象
 			object = getCachedObjectForFactoryBean(beanName);
 		}
+		// 如果object为null
 		if (object == null) {
 			// Return bean instance from factory.
+			// 从工厂返回Bean实例
+			// 将beanInstance强转为FactoryBean对象
 			FactoryBean<?> factory = (FactoryBean<?>) beanInstance;
 			// Caches object obtained from FactoryBean if it is a singleton.
+			// 如果是单例对象，则缓存从FactoryBean获得的对象、
+			// 如果mbd为null&&该BeanFactory包含beanName的BeanDefinition对象。
 			if (mbd == null && containsBeanDefinition(beanName)) {
+				//获取beanName合并后的本地RootBeanDefintiond对象
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
+			// 是否是'synthetic'标记：mbd不为null && 返回此bean定义是否是"synthetic"【一般是指只有AOP相关的prointCut配置或者
+			// Advice配置才会将 synthetic设置为true】
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			// 从BeanFactory对象中获取管理的对象.如果不是synthetic会对其对象进行该工厂的后置处理
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
+		// 返回为bean公开的对象
 		return object;
 	}
 
