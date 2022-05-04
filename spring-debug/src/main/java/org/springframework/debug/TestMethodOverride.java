@@ -4,6 +4,7 @@ package org.springframework.debug;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.debug.methodOverrides.lookup.Apple;
+import org.springframework.debug.methodOverrides.lookup.FruitPlate;
 
 /**
  * spring中默认的对象都是单例的，spring会在一级缓存中持有该对象，方便下次直接获取，
@@ -17,15 +18,15 @@ import org.springframework.debug.methodOverrides.lookup.Apple;
 public class TestMethodOverride {
     public static void main(String[] args) {
         ApplicationContext ac = new ClassPathXmlApplicationContext("methodOverride.xml");
-        Apple bean = ac.getBean(Apple.class);
-        System.out.println(bean.getBanana());
-        Apple bean2 = ac.getBean(Apple.class);
-        System.out.println(bean2.getBanana());
-        //        FruitPlate fruitplate1 = (FruitPlate) ac.getBean("fruitplate1");
-//        fruitplate1.getFruit();
-//        FruitPlate fruitplate2 = (FruitPlate) ac.getBean("fruitplate1");
-//        fruitplate2.getFruit();
+//        Apple bean = ac.getBean(Apple.class);
+//        System.out.println(bean.getBanana());
+//        Apple bean2 = ac.getBean(Apple.class);
+//        System.out.println(bean2.getBanana());
+        FruitPlate fruitplate1 = (FruitPlate) ac.getBean("fruitplate1");
+        fruitplate1.getFruit();
+        FruitPlate fruitplate2 = (FruitPlate) ac.getBean("fruitplate1");
+        fruitplate2.getFruit();
 //        FruitPlate fruitplate2 = (FruitPlate) ac.getBean("fruitplate2");
-//        fruitplate2.getFruit();
+//        fruitplate2.getFruit();instantiateWithMethodInjection(bd, beanName, owner);
     }
 }
