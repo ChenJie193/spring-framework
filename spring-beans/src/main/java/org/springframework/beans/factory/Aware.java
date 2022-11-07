@@ -32,6 +32,17 @@ package org.springframework.beans.factory;
  * @author Juergen Hoeller
  * @since 3.1
  */
+/***
+ *<P>@author: 陈杰
+ * 描述:使用Aware机制对Bean实现方法回调进行扩展。
+ * 在Spring中ApplicationContextAware定义了setApplicationContext方法，
+ * 并在ApplicationContextAwareProcessor中对其实现类进行回调，完成对bean设置上下文的功能
+ *
+ * 当spring容器创建的bean对象在进行具体操作的时候，如果需要容器的其他对象，此时可以将对象实现
+ * Aware接口，来满足当前需要
+ *<P>2022/11/7 0007 17:30
+ *
+ */
 public interface Aware {
 
 }
