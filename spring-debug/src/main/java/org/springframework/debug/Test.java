@@ -12,12 +12,13 @@ public class Test {
 
 	public static void main(String[] args) {
 
-		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("applicationContext.xml");
 
-		MyFactoryBean bean1 = (MyFactoryBean) ac.getBean( "&myFactoryBean");
-        System.out.println(bean1);
-        User bean = (User) ac.getBean("myFactoryBean");
-        System.out.println(bean.getUsername());
+		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("applicationContext.xml");
+//
+//		MyFactoryBean bean1 = (MyFactoryBean) ac.getBean( "&myFactoryBean");
+//        System.out.println(bean1);
+//        User bean = (User) ac.getBean("myFactoryBean");
+//        System.out.println(bean.getUsername());
 //		ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("test.xml");
 //        Person person = ac.getBean("person", Person.class);
 //        ac.close();postProcessBeanFactory
@@ -26,5 +27,6 @@ public class Test {
 //		Customer bean = ac.getBean(Customer.class);
 //		System.out.println(bean);
 	}
+
 }
 
