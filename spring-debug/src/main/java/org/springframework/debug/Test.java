@@ -1,6 +1,7 @@
 package org.springframework.debug;
 
-import org.springframework.debug.supplier.User;
+
+import org.springframework.debug.selftag.User;
 
 /**
  *<P>@author: 陈杰
@@ -26,6 +27,8 @@ public class Test {
 //		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("selfEditor.xml");
 //		Customer bean = ac.getBean(Customer.class);
 //		System.out.println(bean);
+		User user = (User) ac.getBean("cj");
+		System.out.println(user);
 	}
 
 }

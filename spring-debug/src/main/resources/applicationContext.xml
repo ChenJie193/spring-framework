@@ -2,11 +2,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:cj="http://www.mashibing.org/schema/user"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
-        ">
+        http://www.mashibing.org/schema/user
+        http://www.mashibing.org/schema/user.xsd">
 
-<!--    <msb:user id="msb" userName="lian" email="lian@msb.com" password="123456"></msb:user>-->
+    <cj:user id="cj" userName="lian" email="lian@msb.com" password="123456"></cj:user>
 <!--	<context:component-scan base-package="org.springframework.debug" ></context:component-scan>-->
 <!--	<bean id="user" class="org.springframework.debug.supplier.User" ></bean>-->
 <!--	<bean id="myFactoryBean" class="org.springframework.debug.MyFactoryBean" ></bean>-->
