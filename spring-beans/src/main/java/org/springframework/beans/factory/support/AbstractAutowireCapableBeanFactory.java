@@ -624,6 +624,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 * 2.执行init method
 			 */
 			populateBean(beanName, mbd, instanceWrapper);
+			//执行初始化逻辑
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
