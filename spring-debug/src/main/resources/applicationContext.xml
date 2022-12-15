@@ -8,14 +8,15 @@
         http://www.mashibing.org/schema/user
         http://www.mashibing.org/schema/user.xsd">
 
-    <cj:user id="cj" userName="lian" email="lian@msb.com" password="123456"></cj:user>
-<!--	<context:component-scan base-package="org.springframework.debug" ></context:component-scan>-->
+<!--    <cj:user id="cj" userName="lian" email="lian@msb.com" password="123456"></cj:user>-->
+	<context:component-scan base-package="org.springframework.debug" ></context:component-scan>
 <!--	<bean id="user" class="org.springframework.debug.supplier.User" ></bean>-->
 <!--	<bean id="myFactoryBean" class="org.springframework.debug.MyFactoryBean" ></bean>-->
 <!--	<context:component-scan base-package="org.springframework.debug.shouldSkip" ></context:component-scan>-->
 <!--	<bean id="user" class="com.mashibing.supplier.User" ></bean>-->
 	<context:property-placeholder location="classpath:db.properties" ></context:property-placeholder>
 	<bean class="org.springframework.debug.selfbdrpp.MyBeanDefinitionRegistryPostProcessor"></bean>
+	<bean class="org.springframework.debug.MyBeanFactoryPostProcessor"></bean>
 <!--	<bean id="person2" class="com.mashibing.Person" depends-on="">-->
 <!--		<constructor-arg index="0" value="2">-->
 <!--		</constructor-arg>-->

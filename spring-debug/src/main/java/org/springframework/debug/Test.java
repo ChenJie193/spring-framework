@@ -15,7 +15,7 @@ public class Test {
 	public static void main(String[] args) {
 
 
-//		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("applicationContext.xml");
+		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("applicationContext.xml");
 //
 //		MyFactoryBean bean1 = (MyFactoryBean) ac.getBean( "&myFactoryBean");
 //        System.out.println(bean1);
@@ -25,8 +25,8 @@ public class Test {
 //        Person person = ac.getBean("person", Person.class);
 //        ac.close();postProcessBeanFactory
 //        Person person2 = ac.getBean("person", Person.class);
-		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("selfEditor.xml");
-		Customer bean = ac.getBean(Customer.class);
+//		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("selfEditor.xml");
+//		Customer bean = ac.getBean(Customer.class);
 //		System.out.println(bean);
 //		User user = (User) ac.getBean("cj");
 //		System.out.println(user);

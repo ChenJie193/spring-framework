@@ -551,6 +551,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			// Prepare the bean factory for use in this context.
 			//准备bean工厂
+			// 包括注册各种 editor 处理 Aware接口相关的事宜
 			prepareBeanFactory(beanFactory);
 
 			try {
