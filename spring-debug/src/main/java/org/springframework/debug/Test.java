@@ -15,7 +15,7 @@ public class Test {
 	public static void main(String[] args) {
 
 
-		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("applicationContext.xml");
+		MyClassPathXMLApplicationContext ac = new MyClassPathXMLApplicationContext("populateBean.xml");
 //
 //		MyFactoryBean bean1 = (MyFactoryBean) ac.getBean( "&myFactoryBean");
 //        System.out.println(bean1);
