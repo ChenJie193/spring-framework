@@ -300,26 +300,39 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 
 	protected Object create(Object key) {
 		try {
+			// 获取到当前生成器的类加载器
 			ClassLoader loader = getClassLoader();
+			// 当前类加载器对应的缓存  缓存key为类加载器，缓存的value为ClassLoaderData，可以理解为一个缓存对象，只不过此缓存对象中包含的是具体的业务逻辑处理过程，有两个function的函数式接口，一个是返回gen.key,对应的名称叫GET_KEY,还有一个是为了创建具体的class，名字叫做load
 			Map<ClassLoader, ClassLoaderData> cache = CACHE;
+			// 先从缓存中获取下当前类加载器所有加载过的类
 			ClassLoaderData data = cache.get(loader);
+			// 如果为空
 			if (data == null) {
 				synchronized (AbstractClassGenerator.class) {
 					cache = CACHE;
 					data = cache.get(loader);
 					if (data == null) {
+						// 新建一个缓存Cache，并将之前的缓存Cache的数据添加进来，并将已经被gc回收的数据给清除掉
 						Map<ClassLoader, ClassLoaderData> newCache = new WeakHashMap<ClassLoader, ClassLoaderData>(cache);
+						// 新建一个当前加载器对应的ClassLoaderData并加到缓存中，但ClassLoaderData中此时还没有数据
 						data = new ClassLoaderData(loader);
 						newCache.put(loader, data);
+						// 刷新全局缓存
 						CACHE = newCache;
 					}
 				}
 			}
+			// 设置一个全局key
 			this.key = key;
+			// 在刚创建的data(ClassLoaderData)中调用get方法 并将当前生成器，
+			// 以及是否使用缓存的标识穿进去 系统参数 System.getProperty("cglib.useCache", "true")
+			// 返回的是生成好的代理类的class信息
 			Object obj = data.get(this, getUseCache());
+			// 如果为class则实例化class并返回我们需要的代理类
 			if (obj instanceof Class) {
 				return firstInstance((Class) obj);
 			}
+			// 如果不是则说明是实体，则直接执行另一个方法返回实体
 			return nextInstance(obj);
 		}
 		catch (RuntimeException | Error ex) {
