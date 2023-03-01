@@ -346,21 +346,29 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 	protected Class generate(ClassLoaderData data) {
 		Class gen;
 		Object save = CURRENT.get();
+		// 当前的代理类生成器存入ThreadLocal中
 		CURRENT.set(this);
 		try {
+			// 获取到ClassLoader
 			ClassLoader classLoader = data.getClassLoader();
+			// 判断不能为空
 			if (classLoader == null) {
 				throw new IllegalStateException("ClassLoader is null while trying to define class " +
 						getClassName() + ". It seems that the loader has been expired from a weak reference somehow. " +
 						"Please file an issue at cglib's issue tracker.");
 			}
 			synchronized (classLoader) {
+				// 生成代理类名字
 				String name = generateClassName(data.getUniqueNamePredicate());
+				// 缓存中存入这个名字
 				data.reserveName(name);
+				// 当前代理类生成器设置类名
 				this.setClassName(name);
 			}
+			//尝试从缓存中获取类
 			if (attemptLoad) {
 				try {
+					//要是能获取到就直接返回了
 					gen = classLoader.loadClass(getClassName());
 					return gen;
 				}
@@ -368,7 +376,9 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 					// ignore
 				}
 			}
+			// 生成字节码
 			byte[] b = strategy.generate(this);
+			// 获取到字节码代表的class的名字
 			String className = ClassNameReader.getClassName(new ClassReader(b));
 			ProtectionDomain protectionDomain = getProtectionDomain();
 			synchronized (classLoader) { // just in case
