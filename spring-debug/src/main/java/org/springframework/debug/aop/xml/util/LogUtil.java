@@ -23,26 +23,26 @@ public class LogUtil {
         Signature signature = joinPoint.getSignature();
         //获取参数信息
         Object[] args = joinPoint.getArgs();
-        System.out.println("log---"+signature.getName()+"方法开始执行：参数是"+Arrays.asList(args));
+        System.out.println("log--start---"+signature.getName()+"方法开始执行：参数是"+Arrays.asList(args));
         return 100;
     }
 
 //    @AfterReturning(value = "myPointCut()",returning = "result")
     public static void stop(JoinPoint joinPoint,Object result){
         Signature signature = joinPoint.getSignature();
-        System.out.println("log---"+signature.getName()+"方法执行结束，结果是："+result);
+        System.out.println("log--stop---"+signature.getName()+"方法执行结束，结果是："+result);
     }
 
 //    @AfterThrowing(value = "myPointCut()",throwing = "e")
     public static void logException(JoinPoint joinPoint,Exception e){
         Signature signature = joinPoint.getSignature();
-        System.out.println("log---"+signature.getName()+"方法抛出异常："+e.getMessage());
+        System.out.println("log--logException---"+signature.getName()+"方法抛出异常："+e.getMessage());
     }
 
 //    @After("myPointCut()")
     public static void logFinally(JoinPoint joinPoint){
         Signature signature = joinPoint.getSignature();
-        System.out.println("log---"+signature.getName()+"方法执行结束。。。。。over");
+        System.out.println("log--logFinally---"+signature.getName()+"方法执行结束。。。。。over");
 
     }
 
