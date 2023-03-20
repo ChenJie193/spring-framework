@@ -102,9 +102,9 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 		CompositeComponentDefinition compositeDef =
 				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element));
 		parserContext.pushContainingComponent(compositeDef);
-
+		// 注册自动代理模式创建器,AspectjAwareAdvisorAutoProxyCreator
 		configureAutoProxyCreator(parserContext, element);
-
+		// 解析aop:config子节点下的aop:pointcut/aop:advice/aop:aspect
 		List<Element> childElts = DomUtils.getChildElements(element);
 		for (Element elt: childElts) {
 			String localName = parserContext.getDelegate().getLocalName(elt);
@@ -139,10 +139,13 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * with the supplied {@link BeanDefinitionRegistry}.
 	 */
 	private void parseAdvisor(Element advisorElement, ParserContext parserContext) {
+		// 解析<aop:advisor>节点，最终创建的beanClass为`DefaultBeanFactoryPointcutAdvisor`
+		// 另外advice-ref属性必须定义，其与内部属性adviceBeanName对应
 		AbstractBeanDefinition advisorDef = createAdvisorBeanDefinition(advisorElement, parserContext);
 		String id = advisorElement.getAttribute(ID);
 
 		try {
+			// 注册到bean工厂
 			this.parseState.push(new AdvisorEntry(id));
 			String advisorBeanName = id;
 			if (StringUtils.hasText(advisorBeanName)) {
@@ -152,6 +155,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 				advisorBeanName = parserContext.getReaderContext().registerWithGeneratedName(advisorDef);
 			}
 
+			// 解析point-cut属性并赋值到DefaultBeanFactoryPointcutAdvisor#pointcut内部属性
 			Object pointcut = parsePointcutProperty(advisorElement, parserContext);
 			if (pointcut instanceof BeanDefinition) {
 				advisorDef.getPropertyValues().add(POINTCUT, pointcut);
@@ -434,18 +438,24 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * Pointcut with the BeanDefinitionRegistry.
 	 */
 	private AbstractBeanDefinition parsePointcut(Element pointcutElement, ParserContext parserContext) {
+		// 切入点的唯一标识
 		String id = pointcutElement.getAttribute(ID);
+		// 获取切入点的表达式
 		String expression = pointcutElement.getAttribute(EXPRESSION);
 
 		AbstractBeanDefinition pointcutDefinition = null;
 
 		try {
+			// 采用栈保存切入点
 			this.parseState.push(new PointcutEntry(id));
+			// 创建切入点bean对象
+			// beanClass为AspectJExpressionPointcut.class。并且设置属性expression到该beanClass中
 			pointcutDefinition = createPointcutDefinition(expression);
 			pointcutDefinition.setSource(parserContext.extractSource(pointcutElement));
 
 			String pointcutBeanName = id;
 			if (StringUtils.hasText(pointcutBeanName)) {
+				// 注册bean对象
 				parserContext.getRegistry().registerBeanDefinition(pointcutBeanName, pointcutDefinition);
 			}
 			else {
@@ -456,6 +466,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 					new PointcutComponentDefinition(pointcutBeanName, pointcutDefinition, expression));
 		}
 		finally {
+			// 创建后移除
 			this.parseState.pop();
 		}
 
