@@ -95,13 +95,17 @@ public class ProxyCreatorSupport extends AdvisedSupport {
 
 
 	/**
+	 * 创建AOP代理，如果激活了，就需要有激活通知
+	 *
 	 * Subclasses should call this to get a new AOP proxy. They should <b>not</b>
 	 * create an AOP proxy with {@code this} as an argument.
 	 */
 	protected final synchronized AopProxy createAopProxy() {
 		if (!this.active) {
+			// 监听调用AdvisedSupportListener实现类的activated方法
 			activate();
 		}
+		// 通过AopProxyFactory获得AopProxy，这个AopProxyFactory是在初始化函数中定义的，使用的是DefaultAopProxyFactory
 		return getAopProxyFactory().createAopProxy(this);
 	}
 
@@ -117,14 +121,19 @@ public class ProxyCreatorSupport extends AdvisedSupport {
 	}
 
 	/**
+	 * 添加了接口要有adviceChanged通知
+	 *
 	 * Propagate advice change event to all AdvisedSupportListeners.
 	 * @see AdvisedSupportListener#adviceChanged
 	 */
 	@Override
 	protected void adviceChanged() {
+		// 清除缓存
 		super.adviceChanged();
 		synchronized (this) {
 			if (this.active) {
+				// 给Advised的监听器发送通知,通知Advised的变化
+				// 在Spring中没有默认的实现
 				for (AdvisedSupportListener listener : this.listeners) {
 					listener.adviceChanged(this);
 				}

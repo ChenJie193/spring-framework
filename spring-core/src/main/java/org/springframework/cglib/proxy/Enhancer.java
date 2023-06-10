@@ -557,7 +557,9 @@ public class Enhancer extends AbstractClassGenerator {
 	}
 
 	private Object createHelper() {
+		// 校验callbackTypes、filter是否为空，以及为空时的处理
 		preValidate();
+		// 通过newInstance方法来创建EnhancerKey对象，正常情况下，只需要new一个对象就可以调用方法了，但是Key_Factory是一个EnhancerKey类型，是一个内部接口，需要动态代理来实现，最终是为了调用newInstance方法
 		Object key = KEY_FACTORY.newInstance((superclass != null) ? superclass.getName() : null,
 				ReflectUtils.getNames(interfaces),
 				filter == ALL_ZERO ? null : new WeakCacheKey<CallbackFilter>(filter),
@@ -565,7 +567,9 @@ public class Enhancer extends AbstractClassGenerator {
 				useFactory,
 				interceptDuringConstruction,
 				serialVersionUID);
+		// 设置当前enhancer的代理类的key标识
 		this.currentKey = key;
+		// 调用父类即AbstractClassGenerator的创建代理类
 		Object result = super.create(key);
 		return result;
 	}

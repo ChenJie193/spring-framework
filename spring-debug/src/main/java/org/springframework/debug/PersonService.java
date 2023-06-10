@@ -2,6 +2,6 @@ package org.springframework.debug;
 
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class PersonService {
 }

@@ -173,12 +173,14 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		catch (ClassNotFoundException ex) {
 			ejbRefClass = null;
 		}
-
+		// 添加@Resource注解
 		resourceAnnotationTypes.add(Resource.class);
 		if (webServiceRefClass != null) {
+			// 添加@WebServiceRef注解
 			resourceAnnotationTypes.add(webServiceRefClass);
 		}
 		if (ejbRefClass != null) {
+			// 添加@EJB注解
 			resourceAnnotationTypes.add(ejbRefClass);
 		}
 	}

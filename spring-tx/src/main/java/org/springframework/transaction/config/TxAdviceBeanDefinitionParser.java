@@ -105,9 +105,13 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 			nameHolder.setSource(parserContext.extractSource(methodEle));
 
 			RuleBasedTransactionAttribute attribute = new RuleBasedTransactionAttribute();
+			// 传播特性
 			String propagation = methodEle.getAttribute(PROPAGATION_ATTRIBUTE);
+			// 隔离级别
 			String isolation = methodEle.getAttribute(ISOLATION_ATTRIBUTE);
+			// 超时时间
 			String timeout = methodEle.getAttribute(TIMEOUT_ATTRIBUTE);
+			// 是否只读
 			String readOnly = methodEle.getAttribute(READ_ONLY_ATTRIBUTE);
 			if (StringUtils.hasText(propagation)) {
 				attribute.setPropagationBehaviorName(RuleBasedTransactionAttribute.PREFIX_PROPAGATION + propagation);

@@ -165,22 +165,28 @@ abstract public class KeyFactory {
 	}
 
 	public static KeyFactory create(ClassLoader loader, Class keyInterface, KeyFactoryCustomizer customizer,
-			List<KeyFactoryCustomizer> next) {
+	                                List<KeyFactoryCustomizer> next) {
+		// 创建一个最简易的代理类生成器 即只会生成HashCode equals toString newInstance方法
 		Generator gen = new Generator();
+		// 设置接口为enhancerKey类型
 		gen.setInterface(keyInterface);
 		// SPRING PATCH BEGIN
 		gen.setContextClass(keyInterface);
 		// SPRING PATCH END
 
 		if (customizer != null) {
+			// 添加定制器
 			gen.addCustomizer(customizer);
 		}
 		if (next != null && !next.isEmpty()) {
 			for (KeyFactoryCustomizer keyFactoryCustomizer : next) {
+				// 添加定制器
 				gen.addCustomizer(keyFactoryCustomizer);
 			}
 		}
+		// 设置生成器的类加载器
 		gen.setClassLoader(loader);
+		// 生成enhancerKey的代理类
 		return gen.create();
 	}
 
