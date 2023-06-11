@@ -43,7 +43,7 @@
 <!--        <bean class="com.mashibing.interceptor.HandlerMappingInterceptor"/>-->
 <!--    </mvc:interceptors>-->
 
-    <context:component-scan base-package="com.mashibing"></context:component-scan>
+    <context:component-scan base-package="org.springframework.mymvc"></context:component-scan>
     <mvc:default-servlet-handler/>
     <mvc:annotation-driven></mvc:annotation-driven>
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
