@@ -6,6 +6,11 @@
 		<property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
 	</module>
 
+	<module name="BeforeExecutionExclusionFileFilter">
+		<property name="fileNamePattern"
+				  value=".*[\\/]src[\\/]main[\\/].*$"/>
+	</module>
+
 	<!-- Root Checks -->
 	<module name="io.spring.javaformat.checkstyle.check.SpringHeaderCheck">
 		<property name="fileExtensions" value="java" />

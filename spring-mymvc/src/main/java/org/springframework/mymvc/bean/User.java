@@ -1,4 +1,4 @@
-package org.springframework.bean;
+package org.springframework.mymvc.bean;
 
 import java.io.Serializable;
 
