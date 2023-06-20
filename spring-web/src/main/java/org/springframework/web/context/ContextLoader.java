@@ -277,6 +277,7 @@ public class ContextLoader {
 			// Store context in local instance variable, to guarantee that
 			// it is available on ServletContext shutdown.
 			if (this.context == null) {
+				// 初始化context，第一次执行的时候获取到一个root webApplicationcontext
 				this.context = createWebApplicationContext(servletContext);
 			}
 			if (this.context instanceof ConfigurableWebApplicationContext) {
@@ -331,6 +332,7 @@ public class ContextLoader {
 	 */
 	protected WebApplicationContext createWebApplicationContext(ServletContext sc) {
 		Class<?> contextClass = determineContextClass(sc);
+		// 如果是自定义的contextClass对象，那么必须要实现ConfigurableWebApplicationContext此接口，否则无法直接运行
 		if (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) {
 			throw new ApplicationContextException("Custom context class [" + contextClass.getName() +
 					"] is not of type [" + ConfigurableWebApplicationContext.class.getName() + "]");
@@ -358,6 +360,7 @@ public class ContextLoader {
 			}
 		}
 		else {
+			// 获取 XmlWebApplicationContext 文件
 			contextClassName = defaultStrategies.getProperty(WebApplicationContext.class.getName());
 			try {
 				return ClassUtils.forName(contextClassName, ContextLoader.class.getClassLoader());
@@ -397,7 +400,7 @@ public class ContextLoader {
 		if (env instanceof ConfigurableWebEnvironment) {
 			((ConfigurableWebEnvironment) env).initPropertySources(sc, null);
 		}
-
+		// applicationContext和BeanFactory是继承关系
 		customizeContext(sc, wac);
 		wac.refresh();
 	}

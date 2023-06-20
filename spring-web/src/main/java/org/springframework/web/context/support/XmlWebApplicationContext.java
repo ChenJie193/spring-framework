@@ -58,6 +58,7 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
  * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader
  * @see org.springframework.web.context.ContextLoader#initWebApplicationContext
  * @see org.springframework.web.servlet.FrameworkServlet#initWebApplicationContext
+ * 继承自 AbstractApplicationContext
  */
 public class XmlWebApplicationContext extends AbstractRefreshableWebApplicationContext {
 
