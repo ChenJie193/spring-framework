@@ -121,26 +121,35 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	@Override
 	@Nullable
 	protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
+		// 截取用于匹配的URL有效路径
 		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
 		request.setAttribute(LOOKUP_PATH, lookupPath);
+		// 根据路径寻找handler，此处并不是直接从map中获取，很多handler都有通配符的写法，甚至有多个匹配项，此时需要做好选择
 		Object handler = lookupHandler(lookupPath, request);
+		// 如果找不到处理器，则使用rootHandler或defaultHandler处理器
 		if (handler == null) {
 			// We need to care for the default handler directly, since we need to
 			// expose the PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE for it as well.
 			Object rawHandler = null;
+			// 如果是根路径，则使用rootHandler处理器
 			if (StringUtils.matchesCharacter(lookupPath, '/')) {
+				// 如果请求的路径仅仅是“/”,那么使用RootHandler进行处理
 				rawHandler = getRootHandler();
 			}
+			// 如果无法找到handler，则使用默认的handler
 			if (rawHandler == null) {
 				rawHandler = getDefaultHandler();
 			}
 			if (rawHandler != null) {
 				// Bean name or resolved handler?
+				// 如果找到的处理器是String类型，则从容器中找到该beanName对应的Bean作为处理器
 				if (rawHandler instanceof String) {
 					String handlerName = (String) rawHandler;
 					rawHandler = obtainApplicationContext().getBean(handlerName);
 				}
+				// 空方法，校验处理器。目前暂无子类实现该方法
 				validateHandler(rawHandler, request);
+				// 创建处理器（HandlerExecutionChain对象）
 				handler = buildPathExposingHandler(rawHandler, lookupPath, lookupPath, null);
 			}
 		}
@@ -163,21 +172,28 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	@Nullable
 	protected Object lookupHandler(String urlPath, HttpServletRequest request) throws Exception {
 		// Direct match?
+		// 直接根据url进行查找handler
 		Object handler = this.handlerMap.get(urlPath);
 		if (handler != null) {
 			// Bean name or resolved handler?
+			// 如果找到的处理器是String类型，则从容器中找到该beanName对应的Bean作为处理器
 			if (handler instanceof String) {
 				String handlerName = (String) handler;
 				handler = obtainApplicationContext().getBean(handlerName);
 			}
+			// 空方法，校验处理器。目前暂无子类实现该方法
 			validateHandler(handler, request);
+			// 创建处理器
 			return buildPathExposingHandler(handler, urlPath, urlPath, null);
 		}
 
 		// Pattern match?
+		// 通过表达式进行匹配具体通过antPathMatcher实现
 		List<String> matchingPatterns = new ArrayList<>();
+		// 情况二，Pattern匹配合适的，并添加到 matchingPatterns 中
 		for (String registeredPattern : this.handlerMap.keySet()) {
 			if (getPathMatcher().match(registeredPattern, urlPath)) {
+				// 路径通过Pattern匹配成功
 				matchingPatterns.add(registeredPattern);
 			}
 			else if (useTrailingSlashMatch()) {
@@ -187,9 +203,11 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 			}
 		}
 
+		// 获得首个匹配（最优）的结果
 		String bestMatch = null;
 		Comparator<String> patternComparator = getPathMatcher().getPatternComparator(urlPath);
 		if (!matchingPatterns.isEmpty()) {
+			// 排序
 			matchingPatterns.sort(patternComparator);
 			if (logger.isTraceEnabled() && matchingPatterns.size() > 1) {
 				logger.trace("Matching patterns " + matchingPatterns);
@@ -197,26 +215,32 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 			bestMatch = matchingPatterns.get(0);
 		}
 		if (bestMatch != null) {
+			// 获得bestMatch对应的处理器
 			handler = this.handlerMap.get(bestMatch);
 			if (handler == null) {
 				if (bestMatch.endsWith("/")) {
 					handler = this.handlerMap.get(bestMatch.substring(0, bestMatch.length() - 1));
 				}
+				// 如果获得不到，抛出IllegalStateException异常
 				if (handler == null) {
 					throw new IllegalStateException(
 							"Could not find handler for best pattern match [" + bestMatch + "]");
 				}
 			}
 			// Bean name or resolved handler?
+			// 如果找到的处理器是String类型，则从容器中找到该beanName对应的Bean作为处理器
 			if (handler instanceof String) {
 				String handlerName = (String) handler;
 				handler = obtainApplicationContext().getBean(handlerName);
 			}
+			// 空方法，校验处理器。目前暂无子类实现该方法
 			validateHandler(handler, request);
+			// 获得最匹配的路径
 			String pathWithinMapping = getPathMatcher().extractPathWithinPattern(bestMatch, urlPath);
 
 			// There might be multiple 'best patterns', let's make sure we have the correct URI template variables
 			// for all of them
+			// 之前通过sort方法进行排序，然后拿第一个作为bestPatternMatch的，不过有可能有多个pattern的顺序相同，也就是sort方法返回0，这里就是处理这种情况
 			Map<String, String> uriTemplateVariables = new LinkedHashMap<>();
 			for (String matchingPattern : matchingPatterns) {
 				if (patternComparator.compare(bestMatch, matchingPattern) == 0) {
@@ -228,6 +252,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 			if (logger.isTraceEnabled() && uriTemplateVariables.size() > 0) {
 				logger.trace("URI variables " + uriTemplateVariables);
 			}
+			// 创建处理器
 			return buildPathExposingHandler(handler, bestMatch, pathWithinMapping, uriTemplateVariables);
 		}
 

@@ -153,9 +153,13 @@ public class CommonsMultipartResolver extends CommonsFileUploadSupport
 	 * @throws MultipartException if multipart resolution failed.
 	 */
 	protected MultipartParsingResult parseRequest(HttpServletRequest request) throws MultipartException {
+		// 从请求中读出当前请求的编码
 		String encoding = determineEncoding(request);
+		//按照请求的编码，获取一个FileUpload对象，装载到CommonsFileUploadSupport的property属性都会被装入这个对象中
+		//prepareFileUpload是继承自CommonsFileUploadSupport的函数，会比较请求的编码和XML中配置的编码，如果不一样，会拒绝处理
 		FileUpload fileUpload = prepareFileUpload(encoding);
 		try {
+			// 对请求中的multipart文件进行具体的处理
 			List<FileItem> fileItems = ((ServletFileUpload) fileUpload).parseRequest(request);
 			return parseFileItems(fileItems, encoding);
 		}

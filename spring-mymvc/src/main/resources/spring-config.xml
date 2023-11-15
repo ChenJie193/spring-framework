@@ -8,4 +8,8 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
+	<bean id = "user" class="org.springframework.mymvc.bean.User">
+		<property name="username" value="zhangsan"></property>
+		<property name="age" value="12"></property>
+	</bean>
 </beans>
